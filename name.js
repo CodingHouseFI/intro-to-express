@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const uuid = require('uuid');
 
 const dataPath = path.join(__dirname, 'names.json');
 
@@ -12,7 +13,25 @@ exports.get = cb => {
 exports.create = (newName, cb) => {
   readNames((err, names) => {
     if(err) return cb(err);
-    names.push(newName);
+
+    let nameObj = {
+      name: newName,
+      id: uuid()
+    };
+
+    names.push(nameObj);
+
+    writeNames(names, cb);
+  });
+}
+
+exports.delete = (id, cb) => {
+  readNames((err, names) => {
+    if(err) return cb(err);
+
+    // remove the name
+    names = names.filter(nameObj => nameObj.id !== id);
+
     writeNames(names, cb);
   });
 }

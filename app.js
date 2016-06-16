@@ -10,45 +10,40 @@ let app = express();
 
 app.use(morgan('dev'));
 
-
-/// Example Middleware Function:
-app.use(function(req, res, next) {
-  req.monkey = 'primate';
-  next();
-});
-
-//////////////////////////////////////////
-// query string === ?key=value&key2=value2
-
-
-function authMiddleware(req, res, next) {
-  if(req.query.password !== 'tree') {
-    res.status(401);
-    res.send('WRONG PASSWORD!\n');
-    return;
-  }
-  next();
-}
-
-app.use(authMiddleware);
-
-
 // defines a GET request to a url
 app.get('/', function(req, res) {
   let indexPath = path.join(__dirname, 'index.html');
   res.sendFile(indexPath);
 });
 
-app.get('/color', function(req, res) {
-  res.send('color is blue\n');
+/*
+    RESTful Methods
+
+    Create   -   POST
+    Read     -   GET
+    Update   -   PUT
+    Delete   -   DELETE
+*/
+
+//    /square/5
+
+
+var names = [];
+
+// read the array of names
+app.get('/names', function(req, res) {
+  console.log('req.headers:', req.headers);
+  res.send(names);
 });
 
+/// POST   /names/Cade
 
-app.post('/', function(req, res) {
+app.post('/names/:newName', function(req, res) {
 
-  console.log('req.monkey:', req.monkey);
-
-  res.send('posted!\n');
+  console.log('req.params:', req.params);
+  let name = req.params.newName;
+  names.push(name);
+  res.send();
 });
 
 
@@ -56,10 +51,3 @@ app.post('/', function(req, res) {
 app.listen(PORT, err => {
   console.log(err || `Express listening on port ${PORT}`);
 });
-
-
-
-
-
-
-
